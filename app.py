@@ -51,10 +51,10 @@ server = app.server
 
 
 app.layout = html.Div(children=[
-    html.H1(children='My First DashBoard'),
+    html.H1(children='Dash Example'),
 
     html.Div(children='''
-        Example of html Container
+        JRF production
     '''),
 
     dcc.Graph(
