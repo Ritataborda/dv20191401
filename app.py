@@ -1,6 +1,9 @@
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
 import plotly.graph_objects as go
 import pandas as pd
-import numpy as np
+
 path_datasets = ''
 path_lesson = path_datasets + 'ex1/'
 ex1 = pd.read_excel(path_datasets + 'ex1.xlsx', sheet_name='aux2020')
@@ -19,3 +22,10 @@ layout_1 = dict(title=dict(
 fig_1 = go.Figure(data=data_1, layout=layout_1)
 
 fig_1.show()
+
+app = dash.Dash(__name__)
+
+server = app.server
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
