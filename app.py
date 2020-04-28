@@ -21,11 +21,29 @@ layout_1 = dict(title=dict(
                   yaxis=dict(title='Procedimentos Criados'))
 fig_1 = go.Figure(data=data_1, layout=layout_1)
 
-fig_1.show()
 
 app = dash.Dash(__name__)
 
 server = app.server
+
+
+
+
+app.layout = html.Div(children=[
+    html.H1(children='My First DashBoard'),
+
+    html.Div(children='''
+        Example of html Container
+    '''),
+
+    dcc.Graph(
+        id='example-graph',
+        figure=fig_1
+    )
+])
+
+
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
