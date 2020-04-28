@@ -1,43 +1,24 @@
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
+path_datasets = 'C:/Users/jrferro/Desktop/'
+path_lesson = path_datasets + 'ex1/'
+ex1 = pd.read_excel(path_datasets + 'ex1.xlsx', sheet_name='aux2020')
+ex1_week = pd.read_excel(path_datasets + 'ex1.xlsx', sheet_name='aux2020', index_col=0)
+entidade_list = ex1_week.columns
+data_1 = [dict(type='scatter',
+             x=ex1_week.index,
+             y=ex1_week[entidade],
+             name=entidade)
+                            for entidade in entidade_list]
+layout_1 = dict(title=dict(
+                        text='Procedimentos Criados'
+                  ),
+                  xaxis=dict(title='Semana 2020'),
+                  yaxis=dict(title='Procedimentos Criados'))
+fig_1 = go.Figure(data=data_1, layout=layout_1)
 
-# Dataset 'Processing'
-
-df_emissions = pd.read_csv('emission_full.csv')
-
-df_emission_0 = df_emissions.loc[df_emissions['year']==2000]
-
-# Building our Graphs (nothing new here)
-
-data_choropleth = dict(type='choropleth',
-                       locations=df_emission_0['country_name'],  #There are three ways to 'merge' your data with the data pre embedded in the map
-                       locationmode='country names',
-                       z=np.log(df_emission_0['CO2_emissions']),
-                       text=df_emission_0['country_name'],
-                       colorscale='inferno',
-                       colorbar=dict(title='CO2 Emissions log scaled')
-                      )
-
-layout_choropleth = dict(geo=dict(scope='world',  #default
-                                  projection=dict(type='orthographic'
-                                                 ),
-                                  #showland=True,   # default = True
-                                  landcolor='black',
-                                  lakecolor='white',
-                                  showocean=True,   # default = False
-                                  oceancolor='azure'
-                                 ),
-                         
-                         title=dict(text='World Choropleth Map',
-                                    x=.5 # Title relative position according to the xaxis, range (0,1)
-                                   )
-                        )
-
-fig = go.Figure(data=data_choropleth, layout=layout_choropleth)
+fig_1.show()
 
 
 
@@ -51,10 +32,10 @@ server = app.server
 
 
 app.layout = html.Div(children=[
-    html.H1(children='Dash Example'),
+    html.H1(children='Procedimentos SaphetyGov'),
 
     html.Div(children='''
-        JRF production
+        Avaliação Semanal
     '''),
 
     dcc.Graph(
