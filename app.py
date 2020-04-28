@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
-path_datasets = 'C:/Users/jrferro/Desktop/'
+path_datasets = 'ex1.xlsx'
 path_lesson = path_datasets + 'ex1/'
 ex1 = pd.read_excel(path_datasets + 'ex1.xlsx', sheet_name='aux2020')
 ex1_week = pd.read_excel(path_datasets + 'ex1.xlsx', sheet_name='aux2020', index_col=0)
