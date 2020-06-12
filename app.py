@@ -8,17 +8,17 @@ import plotly.graph_objs as go
 #import the dataset
 df = pd.read_excel('dataset.xlsx')
 
-#option labels
+#opções dos filtros
 procedimento_options = [
-    dict(label='Tipo ' + procedimento, value=procedimento)
+    dict(label=' ' + procedimento, value=procedimento)
     for procedimento in df['Tipo de Procedimento'].unique()]
 
 categoria_options = [
-    dict(label='Cat ' + categoria, value=categoria)
+    dict(label=' ' + categoria, value=categoria)
     for categoria in df['Categoria'].unique()]
 
 distrito_options = [
-    dict(label="Reg " + distrito, value=distrito)
+    dict(label=" " + distrito, value=distrito)
     for distrito in df['Distrito'].unique()]
 
 entidade_radio = dcc.RadioItems(
@@ -85,25 +85,26 @@ month_slider = dcc.RangeSlider(
     step=1
     )
 
-#the application code
+#aplicação para apresentar a BD
 app = dash.Dash(__name__)
 server=app.server
+
 app.layout = html.Div(
     [
         dcc.Store(id="aggregate_data"),
-        # empty Div to trigger javascript file for graph resizing
+        # DIV vazia para arrancar o javascript para o graph resizing
         html.Div(id="output-clientside"),
         html.Div(
             [
                 html.Div(
                     [
                         html.Img(
-                            src="assets/dash-logo.png",
+                            src="assets/ppp_logo.png",
                             id="plotly-image",
                             style={
-                                "height": "60px",
+                                "height": "200px",
                                 "width": "auto",
-                                "margin-bottom": "25px",
+                                "margin-bottom": "0px",
                             },
                         )
                     ],
@@ -118,7 +119,7 @@ app.layout = html.Div(
                                     style={"margin-bottom": "0px"},
                                 ),
                                 html.H5(
-                                    "Dashboard", style={"margin-top": "0px"}
+                                    "the Dashboard", style={"margin-top": "0px"}
                                 ),
                             ]
                         )
@@ -129,25 +130,25 @@ app.layout = html.Div(
             ],
             id="header",
             className="row flex-display",
-            style={"margin-bottom": "25px"},
+            style={"margin-bottom": "0px"},
         ),
         html.Div(
             [
                 html.Div(
                     [
                         html.P(
-                            "Filtro Temporal:",
+                            "Date Filter:",
                             className="control_label",
                         ),
                         date_picker,
                         html.P(
-                            "Escolha o Tipo de Contratação:",
+                            "Type of Contract:",
                             className="control_label",
                         ),
                         dropdown_procedimento,
-                        html.P("Filtre por CPV do Procedimento:", className="control_label"),
+                        html.P("Contract CPV:", className="control_label"),
                         dropdown_categoria,
-                        html.P("Filtre por Distrito:", className="control_label"),
+                        html.P("District:", className="control_label"),
                         dropdown_distrito,
                     ],
                     className="pretty_container four columns",
@@ -158,25 +159,25 @@ app.layout = html.Div(
                         html.Div(
                             [
                                 html.Div(
-                                    [html.H6("Nr total de contratos"), dcc.Loading(html.Div([html.H6("...")],
+                                    [html.H6("Number of Contracts"), dcc.Loading(html.Div([html.H6("...")],
                                     id="numero_contratos",
                                     style={"font-size":20, "font-weight":"bold"}))],
                                     className="mini_container",),
 
                                 html.Div(
-                                    [html.H6("Valor total gasto"), dcc.Loading(html.Div([html.H6("...")],
+                                    [html.H6("Value Spent/Won"), dcc.Loading(html.Div([html.H6("...")],
                                     id="valor_contratos",
                                     style={"font-size":20, "font-weight":"bold"}))],
                                     className="mini_container",),
 
                                 html.Div(
-                                    [html.H6("Valor médio por contrato"), dcc.Loading(html.Div([html.H6("...")],
+                                    [html.H6("Average Value per Contract"), dcc.Loading(html.Div([html.H6("...")],
                                     id="mean_contratos",
                                     style={"font-size":20, "font-weight":"bold"}))],
                                     className="mini_container",),
 
                                 html.Div(
-                                    [html.H6("Número de clientes"), dcc.Loading(html.Div([html.H6("...")],
+                                    [html.H6("Number of Organizations"), dcc.Loading(html.Div([html.H6("...")],
                                     id="num_clientes",
                                     style={"font-size": 20, "font-weight": "bold"}))],
                                     className="mini_container",),],id="info-container",
@@ -185,7 +186,7 @@ app.layout = html.Div(
                         html.Div(
                             [
                                 html.P(
-                                    "Escolha o Tipo de Entidade:",
+                                    "Type of Organization:",
                                     className="control_label",
                                 ),
                                 entidade_radio,
@@ -217,6 +218,7 @@ app.layout = html.Div(
     style={"display": "flex", "flex-direction": "column"},
 )
 
+#callback da aplicação, agrupar todos os gráficos ou tabelas
 @app.callback(
     [Output('numero_contratos', 'children'),
      Output('valor_contratos', 'children'),
@@ -273,7 +275,7 @@ def update_graph(procedimentos, categorias, distritos, start_date, end_date, ent
     numero_de_clientes = numero_de_clientes.shape[0]
     numero_de_clientes = str(f"{numero_de_clientes:,}")
 
-    # BAR CHART - Preço contratual por entidade
+    # Bar Chart - Preço contratual por entidade
     bar_series = filtered_df.groupby([entidade])['Preço Contratual'].sum()
     bar_series = bar_series.sort_values(ascending=False).head(10)
 
@@ -290,7 +292,7 @@ def update_graph(procedimentos, categorias, distritos, start_date, end_date, ent
 
     bar_layout = dict(
         yaxis=dict(showticklabels=False),
-        xaxis=dict(showgrid=False, zeroline=False, title='€'),
+        xaxis=dict(showgrid=False, zeroline=False, title='Value Spent/Won'),
         margin=dict(l=30, r=30, b=20, t=40),
         hovermode="closest",
         plot_bgcolor="#F9F9F9",
@@ -300,7 +302,7 @@ def update_graph(procedimentos, categorias, distritos, start_date, end_date, ent
 
     bar_fig = go.Figure(data=bar_data, layout=bar_layout)
 
-    # PIE CHART - Preço contratual por tipo de procedimento
+    # Pie Chart - Preço contratual por tipo de procedimento
     pie_series = filtered_df.groupby(['Tipo de Procedimento'])['Preço Contratual'].sum()
 
     pie_data = [dict(
@@ -321,12 +323,12 @@ def update_graph(procedimentos, categorias, distritos, start_date, end_date, ent
         paper_bgcolor="#F9F9F9",
         font=dict(color="777777"),
         legend=dict(font=dict(color="#CCCCCC", size="10"), orientation="h", bgcolor="rgba(0,0,0,0)"),
-        title="Tipo de Procedimento",
+        title="Type of Contract",
     )
 
     pie_fig = dict(data=pie_data, layout=pie_layout)
 
-    # SCATTER CHART - Preço contratual por data
+    # Scatter Chart - Preço contratual por data
     scatter_series = filtered_df.groupby(['Data de Publicação'])['Preço Contratual'].sum()
 
     scatter_data = [
@@ -344,7 +346,7 @@ def update_graph(procedimentos, categorias, distritos, start_date, end_date, ent
         hovermode="closest",
         plot_bgcolor="#F9F9F9",
         paper_bgcolor="#F9F9F9",
-        title="Preço Contratual",
+        title="Value Spent",
     )
     scatter_fig = dict(data=scatter_data, layout=scatter_layout)
 
