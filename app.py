@@ -6,7 +6,7 @@ import pandas as pd
 import plotly.graph_objs as go
 
 #import the dataset
-df = pd.read_csv('dataset.csv')
+df = pd.read_excel('dataset.xlsx')
 
 #option labels
 procedimento_options = [
