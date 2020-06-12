@@ -88,8 +88,8 @@ month_slider = dcc.RangeSlider(
     )
 
 #the application code
-app = dash.Dash(__name__, external_stylesheets='')
-
+app = dash.Dash(__name__)
+server=app.server
 app.layout = html.Div(
     [
         dcc.Store(id="aggregate_data"),
